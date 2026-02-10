@@ -1,0 +1,63 @@
+# 1-Layer GCD Training Command
+
+## Command
+
+```bash
+python train.py --dump_path ./dumped --exp_name gcd_1layer --exp_id 1 \
+    --operation gcd \
+    --n_enc_layers 1 --n_dec_layers 1 \
+    --enc_emb_dim 128 --dec_emb_dim 128 \
+    --n_enc_heads 4 --n_dec_heads 4 \
+    --gelu_activation false \
+    --max_epoch 200 \
+    --epoch_size 50000 \
+    --batch_size 64 \
+    --optimizer "adam,lr=0.0001" \
+    --maxint 100000
+```
+
+## Parameter Explanation
+
+### Task
+| Parameter | Value | Description |
+|---|---|---|
+| `--operation gcd` | `gcd` | Train the model to compute GCD of two integers |
+| `--maxint` | `100000` | Input integers sampled uniformly from [1, 100000] |
+
+### Architecture
+| Parameter | Value | Description |
+|---|---|---|
+| `--n_enc_layers` | `1` | 1 Transformer layer in the encoder |
+| `--n_dec_layers` | `1` | 1 Transformer layer in the decoder |
+| `--enc_emb_dim` | `128` | Token embedding dimension d = 128 (encoder) |
+| `--dec_emb_dim` | `128` | Token embedding dimension d = 128 (decoder) |
+| `--n_enc_heads` | `4` | 4 attention heads in encoder, each of dimension d/4 = 32 |
+| `--n_dec_heads` | `4` | 4 attention heads in decoder, each of dimension d/4 = 32 |
+| `--gelu_activation` | `false` | Use ReLU activation in the FFN (not GELU) |
+| MLP hidden dim | `512` | Automatically computed as `dim * 4 = 128 * 4 = 512` (hardcoded in `src/model/transformer.py:404`) |
+
+### Defaults (not in command, but active)
+| Parameter | Default | Description |
+|---|---|---|
+| `--sinusoidal_embeddings` | `false` | Uses learned positional embeddings (not sinusoidal) |
+| `--enc_has_pos_emb` | `true` | Encoder has positional embeddings |
+| `--dec_has_pos_emb` | `true` | Decoder has positional embeddings |
+| `--share_inout_emb` | `true` | Input and output embeddings are shared |
+| `--dropout` | `0` | No dropout (fine since data is generated on-the-fly) |
+| `--base` | `1000` | Integers encoded in base 1000 |
+| `--clip_grad_norm` | `5` | Gradient clipping norm |
+
+### Training
+| Parameter | Value | Description |
+|---|---|---|
+| `--max_epoch` | `200` | Train for up to 200 epochs (sufficient for a 1-layer model to converge or plateau) |
+| `--epoch_size` | `50000` | Generate 50k training examples per epoch before evaluating (more frequent eval than the 300k default) |
+| `--batch_size` | `64` | 64 examples per batch (larger than default 32 since the model is small) |
+| `--optimizer` | `adam,lr=0.0001` | Adam optimizer with learning rate 1e-4 |
+
+### Output
+| Parameter | Value | Description |
+|---|---|---|
+| `--dump_path` | `./dumped` | Save experiment logs and checkpoints here |
+| `--exp_name` | `gcd_1layer` | Experiment name for organization |
+| `--exp_id` | `1` | Experiment run ID |
