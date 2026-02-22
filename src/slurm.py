@@ -151,7 +151,7 @@ def init_distributed_mode(params):
     print(PREFIX + "Hostname       : %s" % socket.gethostname())
 
     # set GPU device
-    if not params.cpu:
+    if not params.cpu and torch.cuda.is_available():
         if params.local_gpu != -1:
             torch.cuda.set_device(params.local_gpu)
         else:
