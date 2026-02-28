@@ -1,8 +1,31 @@
 # 1-Layer GCD Training Command
 
+# TODO
+take the embedding and do
+- fourier transform
+- svd
+- pca
+
 ## Command
 
 @dumped/gcd_1layer/1
+
+```bash
+python train.py --dump_path ./dumped --exp_name gcd_1layer --exp_id 1 \
+    --operation gcd \
+    --n_enc_layers 1 --n_dec_layers 1 \
+    --enc_emb_dim 128 --dec_emb_dim 128 \
+    --n_enc_heads 4 --n_dec_heads 4 \
+    --gelu_activation false \
+    --max_epoch 200 \
+    --epoch_size 50000 \
+    --batch_size 64 \
+    --optimizer "adam,lr=0.0001" \
+    --maxint 100000
+```
+
+@dumped/gcd_1layer/2 
+
 ```bash
 python train.py --dump_path ./dumped --exp_name gcd_1layer --exp_id 2 \
     --operation gcd \
@@ -12,32 +35,26 @@ python train.py --dump_path ./dumped --exp_name gcd_1layer --exp_id 2 \
     --gelu_activation false \
     --max_epoch 200 \
     --epoch_size 50000 \
-    --batch_size 64 \
-    --optimizer "adam,lr=0.0001" \
+    --batch_size 128 \
+    --optimizer "adamw,lr=0.0001,beta1=0.9,beta2=0.98,weight_decay=1" \
     --maxint 113 \
     --cpu true
 ```
 
-@dumped/gcd_1layer/2
-
- ~15k pairs per epoch
-97 x 97 = 9,409 pairs of possible gcd
-15k > 9.4k
+@dumped/gcd_grok
 
 ```bash
-python train.py --dump_path ./dumped --exp_name gcd_1layer --exp_id 3 \
+python train.py --dump_path ./dumped --exp_name gcd_1layer --exp_id 2 \
     --operation gcd \
-    --architecture decoder_only \
-    --n_dec_layers 1 \
-    --dec_emb_dim 128 \
-    --n_dec_heads 4 \
+    --n_enc_layers 0 --n_dec_layers 1 \
+    --enc_emb_dim 128 --dec_emb_dim 128 \
+    --n_enc_heads 4 --n_dec_heads 4 \
     --gelu_activation false \
     --max_epoch 200 \
-    --epoch_size 15000 \
+    --epoch_size 50000 \
     --batch_size 128 \
     --optimizer "adamw,lr=0.0001,beta1=0.9,beta2=0.98,weight_decay=1" \
-    --maxint 97 --base 97 \
-    --cpu true
+    --maxint 113
 ```
 
 ## Parameters
