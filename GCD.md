@@ -65,7 +65,7 @@ python train.py --dump_path ./dumped --exp_name gcd_grok --exp_id 1 \
     --maxint 113 \
     --train_data data/gcd_train.txt \
     --eval_data "data/gcd_eval.txt,data/gcd_eval.txt" \
-    --eval_size 3831 \
+    --eval_size 3830 \
     --num_workers 0 \
     --batch_size_eval 128
 ```

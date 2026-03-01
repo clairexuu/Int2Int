@@ -328,7 +328,7 @@ def get_optimizer(parameters, s):
         raise Exception('Unknown optimization method: "%s"' % method)
 
     # check that we give good parameters to the optimizer
-    expected_args = inspect.getargspec(optim_fn.__init__)[0]
+    expected_args = inspect.getfullargspec(optim_fn.__init__)[0]
     assert expected_args[:2] == ['self', 'params']
     if "betas" in expected_args[2:]:
         optim_params['betas'] = (optim_params.get('beta1', 0.9), optim_params.get('beta2', 0.999))
