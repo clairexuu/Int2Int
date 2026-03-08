@@ -1,12 +1,11 @@
 # 1-Layer GCD Training Command
 
-# TODO
-take the embedding and do
-- fourier transform
-- svd
-- pca
-
 ## Command
+
+```bash
+jupyter nbconvert --to pdf --no-input --output gcd_grok_2.pdf interpret_grok.ipynb
+```
+
 
 @dumped/gcd_1layer/1
 
@@ -72,13 +71,7 @@ python train.py --dump_path ./dumped --exp_name gcd_grok --exp_id 1 \
 
 @dumped/gcd_grok/2
 
-Step 1: Generate fixed 30%/30% train/eval split (mirrors on-the-fly encoding from train.py)
-
-```bash
-python generate_gcd_data.py
-```
-
-Step 2: Train with fixed data for grokking (25,000 data passes, eval every 100 passes = 250 evals)
+A different lr 
 
 ```bash
 python train.py --dump_path ./dumped --exp_name gcd_grok --exp_id 2 \
@@ -94,6 +87,35 @@ python train.py --dump_path ./dumped --exp_name gcd_grok --exp_id 2 \
     --maxint 113 \
     --train_data data/gcd_train.txt \
     --eval_data "data/gcd_eval.txt,data/gcd_eval.txt" \
+    --eval_size 3830 \
+    --num_workers 0 \
+    --batch_size_eval 128
+```
+
+@dumped/gcd_grok/3
+
+use SymbolicInts instead of PositionalInts
+MaxInt = Base
+
+```bash
+# Step 1: Generate symbolic data
+python generate_gcd_data.py --encoding symbolic
+
+# Step 2: Train (add --symbolic true and use sym data files)
+python train.py --dump_path ./dumped --exp_name gcd_grok_symbolic --exp_id 1 \
+    --operation gcd \
+    --n_enc_layers 0 --n_dec_layers 1 \
+    --enc_emb_dim 128 --dec_emb_dim 128 \
+    --n_enc_heads 4 --n_dec_heads 4 \
+    --gelu_activation false \
+    --max_epoch 500 \
+    --epoch_size 383000 \
+    --batch_size 128 \
+    --optimizer "adamw,lr=0.001,beta1=0.9,beta2=0.98,weight_decay=1" \
+    --maxint 113 \
+    --symbolic true \
+    --train_data data/gcd_sym_train.txt \
+    --eval_data "data/gcd_sym_eval.txt,data/gcd_sym_eval.txt" \
     --eval_size 3830 \
     --num_workers 0 \
     --batch_size_eval 128

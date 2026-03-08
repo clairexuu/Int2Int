@@ -87,7 +87,7 @@ class NumberArray(Encoder):
         if code == 'pos_int':
             self.subencoder = PositionalInts(params.base)
         else:
-            self.subencoder = SymbolicInts(params.min_int, params.max_int)
+            self.subencoder = SymbolicInts(params.minint, params.maxint)
         self.symbols.extend(self.subencoder.symbols)
 
     def encode(self, vector):

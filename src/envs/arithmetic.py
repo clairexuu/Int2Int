@@ -99,10 +99,14 @@ class ArithmeticEnvironment(object):
             if self.operation in  ["fraction_add", "fraction_product", "fraction_simplify"]:
                 self.output_encoder = encoders.NumberArray(params, 2, 'V', tensor_dim )
             elif self.operation in ["fraction_round", "gcd", "fraction_determinant","modular_add","modular_mul","elliptic"]:
-                self.output_encoder = encoders.PositionalInts(params.base)
+                if params.symbolic:
+                    self.output_encoder = encoders.SymbolicInts(params.minint, params.maxint)
+                else:
+                    self.output_encoder = encoders.PositionalInts(params.base)
             else:
                 self.output_encoder = encoders.SymbolicInts(0, 1)
-        self.input_encoder = encoders.NumberArray(params, max_dim, 'V', tensor_dim)
+        code = 'symbolic' if params.symbolic else 'pos_int'
+        self.input_encoder = encoders.NumberArray(params, max_dim, 'V', tensor_dim, code=code)
         assert not self.export_pred or isinstance(self.output_encoder, (encoders.SymbolicInts, encoders.PositionalInts))
 
         self.generator = generators.Sequence(params, dims)
@@ -295,6 +299,9 @@ class ArithmeticEnvironment(object):
 
         parser.add_argument(
             "--base", type=int, default=1000, help="Encoding base"
+        )
+        parser.add_argument(
+            "--symbolic", type=bool_flag, default=False, help="Use SymbolicInts encoding instead of PositionalInts"
         )
         parser.add_argument(
             "--modulus", type=int, default=67, help="Modulus for modular operations"
